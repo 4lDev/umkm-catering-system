@@ -55,7 +55,6 @@ This project solves the key problems faced by MSME Catering businesses (e.g., th
 
 ### 1. Access the Admin Panel (Post-Installation)
 
-* **Link Demo:** [LINK_DEMO_ANDA]
 * **Admin Access:** Navigate to `/register` to create the first administrator account, then log in.
 * **Start Here:** After logging in, use the "Manajemen Menu" link to add your first menu items. Orders placed via the homepage will appear under "Manajemen Pesanan."
 
@@ -65,7 +64,7 @@ To run this project on your local machine:
 
 ```bash
 # 1. Clone the Repository
-git clone [LINK_REPOSitori_ANDA]
+git clone https://github.com/4lDev/umkm-catering-system.git
 cd your-project-folder
 
 # 2. Install Dependencies
