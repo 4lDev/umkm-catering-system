@@ -52,6 +52,26 @@
                                 <span class="text-sm font-semibold text-green-700">Ambil Sendiri (Pickup)</span>
                             @endif
                         </div>
+
+                        <div class="col-span-2">
+                            <strong class="block text-sm text-gray-500">Metode Pembayaran:</strong>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-sm font-semibold">
+                                    {{ $order->payment_method == 'transfer' ? 'Transfer Bank (Manual)' : 'Bayar di Tempat (COD)' }}
+                                </span>
+                                
+                                @if ($order->payment_status == 'unpaid')
+                                    <span class-="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        Belum Lunas
+                                    </span>
+                                @else
+                                    <span class-="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Lunas
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        
                         <div class="col-span-2">
                             <strong class="block text-sm text-gray-500">Alamat:</strong>
                             <p>{{ $order->customer_address }}</p>

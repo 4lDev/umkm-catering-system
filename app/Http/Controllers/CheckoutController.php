@@ -43,7 +43,8 @@ class CheckoutController extends Controller
             'customer_name' => 'required|string|max:255',
             'customer_wa' => 'required|string|max:20',
             'customer_address' => 'required|string',
-            'delivery_method' => 'required|string|in:delivery,pickup'
+            'delivery_method' => 'required|string|in:delivery,pickup',
+            'payment_method' => 'required|string|in:transfer,cod'
         ]);
 
         $validated['customer_wa'] = $this->normalizeWa($validated['customer_wa']);
@@ -76,7 +77,9 @@ class CheckoutController extends Controller
                 'customer_address' => $validated['customer_address'],
                 'total_price' => $total,
                 'status' => 'pending', // Status awal pesanan baru
-                'delivery_method' => $validated['delivery_method']
+                'delivery_method' => $validated['delivery_method'],
+                'payment_method' => $validated['payment_method'],
+                'payment_status' => 'unpaid',
             ]);
 
             // 7. Simpan setiap item di keranjang ke tabel 'order_items'
@@ -89,12 +92,6 @@ class CheckoutController extends Controller
                     'quantity' => $details['quantity'],
                 ]);
             }
-
-            // 8. Simpan Order ID & Pesan WA ke session
-            $waMessage = $order->toWhatsAppMessage();
-
-            // 9. Hapus keranjang dari session (karena sudah selesai)
-            session()->forget('cart');
 
             DB::commit();
 
@@ -111,14 +108,14 @@ class CheckoutController extends Controller
             // 12. Arahkan langsung ke WhatsApp
             return redirect()->away($whatsappLink);
             
-        } catch (\Exception $e) {
-            // 11. Jika terjadi error, 'rollback' (batalkan) semua
-            DB::rollBack();
-            
-            // Alihkan kembali ke halaman checkout dengan pesan error
-            return redirect()->back()->with('error', 'Terjadi kesalahan, silakan coba lagi.');
-            // (Untuk debug, Anda bisa tambahkan: . $e->getMessage())
-        }
+            } catch (\Exception $e) {
+                // 11. Jika terjadi error, 'rollback' (batalkan) semua
+                DB::rollBack();
+                // dd($e->getMessage());
+                // Alihkan kembali ke halaman checkout dengan pesan error
+                return redirect()->back()->with('error', 'Terjadi kesalahan, silakan coba lagi.');
+                // (Untuk debug, Anda bisa tambahkan: . $e->getMessage())
+            }
     }
 
     public function success()

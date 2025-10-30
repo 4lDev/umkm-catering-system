@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['customer_name', 'customer_wa', 'customer_address', 'total_price', 'status', 'delivery_method'];
+    protected $fillable = ['customer_name', 'customer_wa', 'customer_address', 'total_price', 'status', 'delivery_method', 'payment_method', 'payment_status'];
 
     /**
      * Mendefinisikan relasi "satu-ke-banyak".
@@ -25,7 +25,7 @@ class Order extends Model
      */
     public function toWhatsAppMessage(): string
     {
-        // 1. Pastikan relasi orderItems sudah dimuat (mencegah error N+1)
+        // 1. Pastikan relasi orderItems sudah dimuat
         $this->loadMissing('orderItems');
 
         // 2. Siapkan variabel untuk item
@@ -35,8 +35,9 @@ class Order extends Model
             $itemsList .= "- {$item->product_name} (x{$item->quantity}) = Rp {$subtotal}\n";
         }
 
-        // 3. Siapkan variabel untuk metode pengiriman
+        // 3. Siapkan teks metode pengiriman & pembayaran
         $deliveryText = ($this->delivery_method == 'delivery') ? "Diantar (Delivery)" : "Ambil Sendiri (Pickup)";
+        $paymentText = ($this->payment_method == 'transfer') ? "Transfer Bank (Manual)" : "Bayar di Tempat (COD)";
 
         // 4. Rangkai Pesan Lengkap
         $message = "Halo, saya *{$this->customer_name}*.\n";
@@ -50,8 +51,9 @@ class Order extends Model
         $message .= "---------------------------\n";
         $message .= "*Total Pembayaran:* Rp " . number_format($this->total_price, 0, ',', '.') . "\n\n";
 
-        $message .= "*INFO PENGIRIMAN:*\n";
-        $message .= "Metode: *{$deliveryText}*\n";
+        $message .= "*INFO PEMBAYARAN & PENGIRIMAN:*\n";
+        $message .= "Metode Bayar: *{$paymentText}*\n"; // <-- INFO BARU
+        $message .= "Metode Ambil: *{$deliveryText}*\n";
         $message .= "Alamat:\n{$this->customer_address}\n\n";
         
         $message .= "*KONTAK SAYA:*\n";

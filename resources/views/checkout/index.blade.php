@@ -83,6 +83,28 @@
                         </div>
                     </div>
 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Metode Pembayaran</label>
+                        <div class="flex gap-4">
+                            <label for="transfer" class="flex items-center p-4 border border-gray-300 rounded-md shadow-sm has-[:checked]:border-blue-500 has-[:checked]:ring-2 has-[:checked]:ring-blue-200">
+                                <input type="radio" id="transfer" name="payment_method" value="transfer" class="h-4 w-4 text-blue-600" checked>
+                                <span class="ml-3 block text-sm font-medium text-gray-700">
+                                    Transfer Bank (Manual)
+                                </span>
+                            </label>
+                            
+                            <label for="cod" class="flex items-center p-4 border border-gray-300 rounded-md shadow-sm has-[:checked]:border-blue-500 has-[:checked]:ring-2 has-[:checked]:ring-blue-200">
+                                <input type="radio" id="cod" name="payment_method" value="cod" class="h-4 w-4 text-blue-600">
+                                <span class="ml-3 block text-sm font-medium text-gray-700">
+                                    Bayar di Tempat (COD)
+                                </span>
+                            </label>
+                        </div>
+                        @error('payment_method')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition text-lg">
                         Buat Pesanan Sekarang
                     </button>
