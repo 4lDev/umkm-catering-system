@@ -43,6 +43,15 @@
                             <strong class="block text-sm text-gray-500">No. WhatsApp:</strong>
                             <span>{{ $order->customer_wa }}</span>
                         </div>
+
+                        <div class="col-span-2">
+                            <strong class="block text-sm text-gray-500">Metode Pengambilan:</strong>
+                            @if ($order->delivery_method == 'delivery')
+                                <span class="text-sm font-semibold text-blue-700">Diantar (Delivery)</span>
+                            @else
+                                <span class="text-sm font-semibold text-green-700">Ambil Sendiri (Pickup)</span>
+                            @endif
+                        </div>
                         <div class="col-span-2">
                             <strong class="block text-sm text-gray-500">Alamat:</strong>
                             <p>{{ $order->customer_address }}</p>

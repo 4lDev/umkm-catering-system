@@ -43,6 +43,7 @@ class CheckoutController extends Controller
             'customer_name' => 'required|string|max:255',
             'customer_wa' => 'required|string|max:20',
             'customer_address' => 'required|string',
+            'delivery_method' => 'required|string|in:delivery,pickup'
         ]);
 
         $validated['customer_wa'] = $this->normalizeWa($validated['customer_wa']);
@@ -75,6 +76,7 @@ class CheckoutController extends Controller
                 'customer_address' => $validated['customer_address'],
                 'total_price' => $total,
                 'status' => 'pending', // Status awal pesanan baru
+                'delivery_method' => $validated['delivery_method']
             ]);
 
             // 7. Simpan setiap item di keranjang ke tabel 'order_items'

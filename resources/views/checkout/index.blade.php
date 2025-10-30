@@ -64,6 +64,25 @@
                         @enderror
                     </div>
 
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Metode Pengambilan</label>
+                        <div class="flex gap-4">
+                            <label for="delivery" class="flex items-center p-4 border border-gray-300 rounded-md shadow-sm has-[:checked]:border-blue-500 has-[:checked]:ring-2 has-[:checked]:ring-blue-200">
+                                <input type="radio" id="delivery" name="delivery_method" value="delivery" class="h-4 w-4 text-blue-600" checked>
+                                <span class="ml-3 block text-sm font-medium text-gray-700">
+                                    Diantar (Delivery)
+                                </span>
+                            </label>
+                            
+                            <label for="pickup" class="flex items-center p-4 border border-gray-300 rounded-md shadow-sm has-[:checked]:border-blue-500 has-[:checked]:ring-2 has-[:checked]:ring-blue-200">
+                                <input type="radio" id="pickup" name="delivery_method" value="pickup" class="h-4 w-4 text-blue-600">
+                                <span class="ml-3 block text-sm font-medium text-gray-700">
+                                    Ambil Sendiri (Pickup)
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
                     <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition text-lg">
                         Buat Pesanan Sekarang
                     </button>
