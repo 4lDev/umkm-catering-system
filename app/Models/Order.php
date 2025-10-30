@@ -16,4 +16,13 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function toWhatsAppMessage()
+    {
+        return "Halo, saya *{$this->customer_name}* telah melakukan pesanan dengan nomor order *#{$this->id}*.\n\n" .
+            "Total pembayaran: Rp " . number_format($this->total_price, 0, ',', '.') . "\n" .
+            "Alamat pengiriman:\n{$this->customer_address}\n\n" .
+            "Mohon konfirmasi pesanan saya, terima kasih 🙏";
+    }
+
 }

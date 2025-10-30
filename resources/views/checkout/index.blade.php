@@ -31,17 +31,37 @@
 
                 <form action="{{ route('checkout.store') }}" method="POST">
                     @csrf
+                    
                     <div class="mb-4">
                         <label for="customer_name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                        <input type="text" name="customer_name" id="customer_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <input type="text" name="customer_name" id="customer_name" 
+                            value="{{ old('customer_name') }}" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('customer_name') border-red-500 @enderror" 
+                            required>
+                        @error('customer_name')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
+                    
                     <div class="mb-4">
                         <label for="customer_wa" class="block text-sm font-medium text-gray-700">Nomor WhatsApp (Contoh: 0812xxxx)</label>
-                        <input type="text" name="customer_wa" id="customer_wa" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        <input type="text" name="customer_wa" id="customer_wa" 
+                            value="{{ old('customer_wa') }}" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('customer_wa') border-red-500 @enderror" 
+                            required>
+                        @error('customer_wa')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
+                    
                     <div class="mb-4">
                         <label for="customer_address" class="block text-sm font-medium text-gray-700">Alamat Lengkap</label>
-                        <textarea name="customer_address" id="customer_address" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required></textarea>
+                        <textarea name="customer_address" id="customer_address" rows="3" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('customer_address') border-red-500 @enderror" 
+                                required>{{ old('customer_address') }}</textarea>
+                        @error('customer_address')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition text-lg">
@@ -55,12 +75,13 @@
                     <h2 class="text-2xl font-semibold mb-4">Ringkasan Pesanan</h2>
                     
                     @php 
-                        $cart = session()->get('cart', []); 
+                        // VARIABEL $cart SUDAH DIKIRIM DARI CONTROLLER.
                         $total = 0;
                     @endphp
 
                     @forelse ($cart as $id => $details)
                         @php $total += $details['price'] * $details['quantity']; @endphp
+                        
                         <div class="flex justify-between items-center mb-3">
                             <div>
                                 <span class="font-semibold">{{ $details['name'] }}</span>
@@ -68,15 +89,15 @@
                             </div>
                             <span class="text-sm text-gray-800">Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}</span>
                         </div>
-                    @empty
-                        <p class="text-gray-500">Keranjang kosong.</p>
+                        @empty
+                        <p class="text-gray-500">Keranjang kosong. Mohon kembali ke menu.</p>
                     @endforelse
 
                     <hr class="my-4">
 
                     <div class="flex justify-between items-center font-bold text-xl">
                         <span>Total</span>
-                        <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                        <span>Rp {{ number_format($total, 0, ',', '.') }}</span> 
                     </div>
 
                     <a href="{{ route('cart.index') }}" class="text-blue-600 hover:text-blue-800 mt-4 inline-block">&larr; Edit Keranjang</a>

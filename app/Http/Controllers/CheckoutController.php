@@ -6,9 +6,14 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // <-- Penting untuk Transaksi
+use App\Traits\NormalizesWaNumber;
 
 class CheckoutController extends Controller
 {
+    use NormalizesWaNumber;
+
+    const ADMIN_WA_NUMBER = '6281532501894';
+
     /**
      * Menampilkan halaman checkout.
      */
@@ -24,7 +29,7 @@ class CheckoutController extends Controller
         }
 
         // Jika keranjang ada isi, tampilkan halaman checkout
-        return view('checkout.index');
+        return view('checkout.index', compact('cart'));
     }
 
 
@@ -40,6 +45,8 @@ class CheckoutController extends Controller
             'customer_address' => 'required|string',
         ]);
 
+        $validated['customer_wa'] = $this->normalizeWa($validated['customer_wa']);
+
         // 2. Ambil keranjang dari session
         $cart = session()->get('cart', []);
 
@@ -47,6 +54,8 @@ class CheckoutController extends Controller
         if (count($cart) == 0) {
             return redirect()->route('home')->with('error', 'Gagal membuat pesanan, keranjang Anda kosong.');
         }
+
+        // dd('Sebelum transaksi DB', $validated, $cart);
 
         // 4. Hitung ulang total harga (sisi server, lebih aman)
         $total = 0;
@@ -79,15 +88,26 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // 8. Jika semua berhasil, 'commit' transaksi
-            DB::commit();
+            // 8. Simpan Order ID & Pesan WA ke session
+            $waMessage = $order->toWhatsAppMessage();
 
             // 9. Hapus keranjang dari session (karena sudah selesai)
             session()->forget('cart');
 
-            // 10. Alihkan ke halaman sukses (Nanti kita buat halaman 'Terima Kasih')
-            // Untuk sekarang, kita alihkan ke homepage dengan pesan sukses
-            return redirect()->route('checkout.success')->with('order_id', $order->id);
+            DB::commit();
+
+            // 10. Buat link WhatsApp otomatis
+            $waNumber = self::ADMIN_WA_NUMBER;
+            $waMessage = $order->toWhatsAppMessage();
+
+            // Format yang benar:
+            $whatsappLink = "https://wa.me/{$waNumber}?text=" . urlencode($waMessage);
+
+            // 11. Hapus keranjang dari session
+            session()->forget('cart');
+
+            // 12. Arahkan langsung ke WhatsApp
+            return redirect()->away($whatsappLink);
             
         } catch (\Exception $e) {
             // 11. Jika terjadi error, 'rollback' (batalkan) semua
